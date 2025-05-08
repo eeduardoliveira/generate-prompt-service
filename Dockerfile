@@ -24,4 +24,4 @@ WORKDIR /root/
 # Copia binário da etapa de build
 COPY --from=builder /app/generate-prompt .
 
-CMD ["go", "run", "main.go"]
+CMD ["./generate-prompt-service"]
