@@ -19,6 +19,6 @@ FROM alpine:latest
 WORKDIR /root/
 
 # Copia binário da etapa de build
-COPY --from=builder /app/generate-prompt .
+COPY --from=builder /app/generate-prompt-service .
 
 CMD ["./generate-prompt-service"]
