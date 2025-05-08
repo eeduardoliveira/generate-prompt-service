@@ -11,7 +11,7 @@ RUN go mod download
 COPY . .
 
 # Compila a aplicação para produção
-RUN go build -o generate-prompt ./main.go
+RUN go build -o generate-prompt-service ./main.go
 
 # Etapa 2: Execução
 FROM alpine:latest
