@@ -1,5 +1,27 @@
-FROM golang:1.23
+# Etapa 1: Build
+FROM golang:1.23-alpine AS builder
+
+# Define diretório de trabalho
 WORKDIR /app
-COPY . .
+
+# Copia os arquivos Go
+COPY go.mod go.sum ./
 RUN go mod download
+
+COPY . .
+
+# Copia o .env para dentro do container
+COPY .env .env
+
+# Compila a aplicação para produção
+RUN go build -o generate-prompt ./main.go
+
+# Etapa 2: Execução
+FROM alpine:latest
+
+WORKDIR /root/
+
+# Copia binário da etapa de build
+COPY --from=builder /app/generate-prompt .
+
 CMD ["go", "run", "main.go"]
