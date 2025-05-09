@@ -1,0 +1,35 @@
+basePath: /
+host: generate-prompt.syphertech.com.br
+info:
+  contact:
+    email: suporte@syphertech.com.br
+    name: Suporte Syphertech
+  description: API responsável por gerar prompts e fazer upload no bucket.
+  termsOfService: http://swagger.io/terms/
+  title: Generate Prompt Service API
+  version: "1.0"
+paths:
+  /generate-prompt:
+    post:
+      consumes:
+      - application/json
+      description: Gera um prompt com base nos dados recebidos
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+        "400":
+          description: Requisição inválida
+          schema:
+            type: string
+        "500":
+          description: Erro interno do servidor
+          schema:
+            type: string
+      summary: Geração de prompt
+      tags:
+      - prompts
+swagger: "2.0"

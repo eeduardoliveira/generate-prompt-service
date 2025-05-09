@@ -1,0 +1,52 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API responsável por gerar prompts e fazer upload no bucket.",
+        "title": "Generate Prompt Service API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Suporte Syphertech",
+            "email": "suporte@syphertech.com.br"
+        },
+        "version": "1.0"
+    },
+    "host": "generate-prompt.syphertech.com.br",
+    "basePath": "/",
+    "paths": {
+        "/generate-prompt": {
+            "post": {
+                "description": "Gera um prompt com base nos dados recebidos",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "prompts"
+                ],
+                "summary": "Geração de prompt",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Requisição inválida",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno do servidor",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

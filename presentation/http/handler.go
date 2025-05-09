@@ -16,6 +16,16 @@ func NewPromptHandler(uc *usecase.GeneratePromptUseCase) *PromptHandler {
 	return &PromptHandler{UseCase: uc}
 }
 
+// Handle godoc
+// @Summary Geração de prompt
+// @Description Gera um prompt com base nos dados recebidos
+// @Tags prompts
+// @Accept json
+// @Produce json
+// @Success 200 {object} string ""
+// @Failure 400 {string} string "Requisição inválida"
+// @Failure 500 {string} string "Erro interno do servidor"
+// @Router /generate-prompt [post]
 func (h *PromptHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 
