@@ -10,15 +10,21 @@ import (
 	"generate-prompt-service/dependencies/uploader"
 	handler "generate-prompt-service/presentation/http"
 
-	"github.com/joho/godotenv"
+	httpSwagger "github.com/swaggo/http-swagger"
 )
 
+// @title Generate Prompt Service API
+// @version 1.0
+// @description API responsável por gerar prompts e fazer upload no bucket.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name Suporte Syphertech
+// @contact.email suporte@syphertech.com.br
+
+// @host generate-prompt.syphertech.com.br
+// @BasePath /
 func main() {
 		// Carrega variáveis de ambiente
-		if err := godotenv.Load(); err != nil {
-			log.Println("⚠️  Aviso: .env não encontrado, usando variáveis do ambiente")
-		}
-		
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8082"
@@ -34,6 +40,8 @@ func main() {
 	h := handler.NewPromptHandler(useCase)
 
 	http.HandleFunc("/generate-prompt", h.Handle)
+	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
+
 
 	log.Printf("🚀 Servidor rodando na porta %s...", port)
 	err := http.ListenAndServe(":"+port, nil)
