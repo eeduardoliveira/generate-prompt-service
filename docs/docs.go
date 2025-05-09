@@ -67,8 +67,6 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API responsável por gerar prompts e fazer upload no bucket.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
-	LeftDelim:        "{{",
-	RightDelim:       "}}",
 }
 
 func init() {
