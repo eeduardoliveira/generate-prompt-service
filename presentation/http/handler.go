@@ -17,14 +17,17 @@ func NewPromptHandler(uc *usecase.GeneratePromptUseCase) *PromptHandler {
 }
 
 // Handle godoc
-// @Summary Geração de prompt
-// @Description Gera um prompt com base nos dados recebidos
+// @Summary Geração de Prompt
+// @Description Recebe os dados de prompt e realiza o upload em bucket S3 com metadados automáticos
 // @Tags prompts
 // @Accept json
 // @Produce json
-// @Success 200 {object} string ""
-// @Failure 400 {string} string "Requisição inválida"
-// @Failure 500 {string} string "Erro interno do servidor"
+// @Param bucket query string true "Nome do bucket"
+// @Param prompt body domain.Prompt true "Dados do Prompt"
+// @Success 201 {object} map[string]string "Prompt gerado com sucesso"
+// @Failure 400 {object} map[string]string "Requisição inválida ou campos obrigatórios ausentes"
+// @Failure 405 {object} map[string]string "Método HTTP não permitido"
+// @Failure 500 {object} map[string]string "Erro interno ao processar prompt"
 // @Router /generate-prompt [post]
 func (h *PromptHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")

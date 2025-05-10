@@ -21,7 +21,7 @@ const docTemplate = `{
     "paths": {
         "/generate-prompt": {
             "post": {
-                "description": "Gera um prompt com base nos dados recebidos",
+                "description": "Recebe os dados de prompt e realiza o upload em bucket S3 com metadados automáticos",
                 "consumes": [
                     "application/json"
                 ],
@@ -31,26 +31,127 @@ const docTemplate = `{
                 "tags": [
                     "prompts"
                 ],
-                "summary": "Geração de prompt",
-                "responses": {
-                    "200": {
-                        "description": "OK",
+                "summary": "Geração de Prompt",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "Nome do bucket",
+                        "name": "bucket",
+                        "in": "query",
+                        "required": true
+                    },
+                    {
+                        "description": "Dados do Prompt",
+                        "name": "prompt",
+                        "in": "body",
+                        "required": true,
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/domain.Prompt"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Prompt gerado com sucesso",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "400": {
-                        "description": "Requisição inválida",
+                        "description": "Requisição inválida ou campos obrigatórios ausentes",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "405": {
+                        "description": "Método HTTP não permitido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     },
                     "500": {
-                        "description": "Erro interno do servidor",
+                        "description": "Erro interno ao processar prompt",
                         "schema": {
-                            "type": "string"
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
                         }
                     }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "domain.Metadados": {
+            "type": "object",
+            "properties": {
+                "dataCriacao": {
+                    "type": "string"
+                },
+                "origem": {
+                    "type": "string"
+                },
+                "ultimaAtualizacao": {
+                    "type": "string"
+                }
+            }
+        },
+        "domain.Prompt": {
+            "type": "object",
+            "properties": {
+                "clienteID": {
+                    "type": "string"
+                },
+                "idiomas": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "metadados": {
+                    "$ref": "#/definitions/domain.Metadados"
+                },
+                "modeloIA": {
+                    "type": "string"
+                },
+                "nomeEmpresa": {
+                    "type": "string"
+                },
+                "servicos": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/domain.Servico"
+                    }
+                },
+                "systemPrompt": {
+                    "type": "string"
+                },
+                "versaoPrompt": {
+                    "type": "integer"
+                }
+            }
+        },
+        "domain.Servico": {
+            "type": "object",
+            "properties": {
+                "descricao": {
+                    "type": "string"
+                },
+                "nome": {
+                    "type": "string"
+                },
+                "preco": {
+                    "type": "number"
                 }
             }
         }
@@ -67,6 +168,8 @@ var SwaggerInfo = &swag.Spec{
 	Description:      "API responsável por gerar prompts e fazer upload no bucket.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
+	LeftDelim:        "{{",
+	RightDelim:       "}}",
 }
 
 func init() {

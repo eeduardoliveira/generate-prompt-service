@@ -1,4 +1,46 @@
 basePath: /
+definitions:
+  domain.Metadados:
+    properties:
+      dataCriacao:
+        type: string
+      origem:
+        type: string
+      ultimaAtualizacao:
+        type: string
+    type: object
+  domain.Prompt:
+    properties:
+      clienteID:
+        type: string
+      idiomas:
+        items:
+          type: string
+        type: array
+      metadados:
+        $ref: '#/definitions/domain.Metadados'
+      modeloIA:
+        type: string
+      nomeEmpresa:
+        type: string
+      servicos:
+        items:
+          $ref: '#/definitions/domain.Servico'
+        type: array
+      systemPrompt:
+        type: string
+      versaoPrompt:
+        type: integer
+    type: object
+  domain.Servico:
+    properties:
+      descricao:
+        type: string
+      nome:
+        type: string
+      preco:
+        type: number
+    type: object
 host: generate-prompt.syphertech.com.br
 info:
   contact:
@@ -13,23 +55,48 @@ paths:
     post:
       consumes:
       - application/json
-      description: Gera um prompt com base nos dados recebidos
+      description: Recebe os dados de prompt e realiza o upload em bucket S3 com metadados
+        automáticos
+      parameters:
+      - description: Nome do bucket
+        in: query
+        name: bucket
+        required: true
+        type: string
+      - description: Dados do Prompt
+        in: body
+        name: prompt
+        required: true
+        schema:
+          $ref: '#/definitions/domain.Prompt'
       produces:
       - application/json
       responses:
-        "200":
-          description: OK
+        "201":
+          description: Prompt gerado com sucesso
           schema:
-            type: string
+            additionalProperties:
+              type: string
+            type: object
         "400":
-          description: Requisição inválida
+          description: Requisição inválida ou campos obrigatórios ausentes
           schema:
-            type: string
+            additionalProperties:
+              type: string
+            type: object
+        "405":
+          description: Método HTTP não permitido
+          schema:
+            additionalProperties:
+              type: string
+            type: object
         "500":
-          description: Erro interno do servidor
+          description: Erro interno ao processar prompt
           schema:
-            type: string
-      summary: Geração de prompt
+            additionalProperties:
+              type: string
+            type: object
+      summary: Geração de Prompt
       tags:
       - prompts
 swagger: "2.0"
