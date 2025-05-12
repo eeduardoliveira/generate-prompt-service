@@ -4,9 +4,11 @@ FROM golang:1.23-alpine AS builder
 # Define diretório de trabalho
 WORKDIR /app
 
-# Copia os arquivos Go
+# Primeiro, copie apenas os arquivos de dependência
 COPY go.mod go.sum ./
-RUN go mod download
+
+# Resolva as dependências (sem copiar o código ainda, melhora cache)
+RUN go mod tidy && go mod download
 
 COPY . .
 
