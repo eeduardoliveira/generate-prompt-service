@@ -9,7 +9,6 @@
 /bin/
 /pkg/
 *.mod
-*.sum
 
 # Configs locais
 .env
