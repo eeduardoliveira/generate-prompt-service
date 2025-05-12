@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"log"
 	"net/http"
 	"os"
@@ -15,6 +16,9 @@ import (
 	"github.com/joho/godotenv"
 	"github.com/rs/cors"
 	httpSwagger "github.com/swaggo/http-swagger" // Swagger handler
+
+	usecaseagent "generate-prompt-service/app/usecase/agentnumber"
+	"generate-prompt-service/dependencies/database"
 )
 
 // @title Generate Prompt Service API
@@ -47,12 +51,22 @@ func main() {
 		Uploader: uploaderClient,
 	}
 
+	dbConn, err := database.NewConnection()
+	if err != nil {
+		log.Fatalf("Erro ao conectar no banco de dados: %v", err)
+	}
+	defer dbConn.Close(context.Background())
+
+	agentRepo := database.NewRepository(dbConn)
+	agentUseCase := usecaseagent.NewCreateAgentNumberUseCase(agentRepo)
+
 	// Handlers
-	h := handler.NewPromptHandler(useCase)
+	promptHandler := handler.NewPromptHandler(useCase)
+	agentNumberHandler := handler.NewAgentNumberHandler(agentUseCase)
 
 	// Rotas
-	http.HandleFunc("/generate-prompt", h.Handle)
-	
+	http.HandleFunc("/api/v1/generate-prompt", promptHandler.Handle)
+	http.HandleFunc("/api/v1/agent-number", agentNumberHandler.Create)
 	// Rota do Swagger
 	http.HandleFunc("/swagger/", httpSwagger.WrapHandler)
 

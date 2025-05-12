@@ -19,7 +19,59 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/generate-prompt": {
+        "/api/v1/agent-number": {
+            "post": {
+                "description": "Insere um novo mapeamento client_id e número de WhatsApp",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "agent-number"
+                ],
+                "summary": "Criar AgentNumber",
+                "parameters": [
+                    {
+                        "description": "Dados do agente",
+                        "name": "data",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/agentnumber.AgentNumber"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Criado com sucesso",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    "400": {
+                        "description": "Payload inválido",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Erro interno",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/v1/generate-prompt": {
             "post": {
                 "description": "Recebe os dados de prompt e realiza o upload em bucket S3 com metadados automáticos",
                 "consumes": [
@@ -92,6 +144,26 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "agentnumber.AgentNumber": {
+            "type": "object",
+            "properties": {
+                "client_id": {
+                    "type": "string"
+                },
+                "customer_id": {
+                    "type": "integer"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "whatsapp_number": {
+                    "type": "string"
+                }
+            }
+        },
         "domain.Metadados": {
             "type": "object",
             "properties": {
